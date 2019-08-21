@@ -2,10 +2,14 @@ const config = require('./config.json');
 const Discord = require('discord.js');
 const moment = require('moment');
 const bot = new Discord.Client();
+const client = new Discord.Client();
 const { get } = require("snekfetch"); 
 bot.commands = new Discord.Collection();
 const superagent = require("snekfetch");
-
+const sql = require("sqlite");
+const momentduration = require('moment-duration-format');
+const mathjs = require('mathjs');
+const https = require('https');
 
 bot.on('ready', () => {
     bot.user.setGame("Command: *_help*")
@@ -44,11 +48,11 @@ let args = messageArray.slice(1);
     if (command === `_help`) {
         let embed = new Discord.RichEmbed()
             .setTitle('Liste des commandes :')
-            .setDescription('**Utiles :earth_africa:** \n `help`\, `helprp`\, `prefix`\, `infobot`\, `serverinfo`\, `userinfo`\, `ping`\, `sondage`\, `anime`\, `invite`\, `invitebot`')
+            .addField('**Utile :earth_africa:**', '** **`help`\, `helprp`\, `prefix`\, `infobot`\, `serverinfo`\, `userinfo`\, `ping`\, `sondage`\, `anime`\, `invite`\, `invitebot`')
             .addField('**Modérations :crossed_swords:**', '** **`ban`\, `kick`\, `warn`\, `mute`\, `tempmute`\, `clear`')
-            .addField('**Fun :tada:**', '** **`say`\, `8ball` \, `anime`\, `baka`\, `gun`\, `slap`\, `cry`\, `hug`\, `kiss`\, `cuddle`\, `kemonomimi`\, `waifu`\, `pat`\,  `ghost`')
+            .addField('**Fun :tada:**', '** **`say`\, `8ball` \, `liesdetect`\, `baka`\, `gun`\,`smug`\, `slap`\, `cry`\, `hug`\, `kiss`\, `cuddle`\, `kemonomimi`\, `waifu`\, `pat`\,  `ghost`')
             .addField('**NSFW :underage:**', '** **`nude`\, `hentaigif`\, `nekogif`\, `anal`\, `pussy`\, `yuri`\, `lewd`')
-            .addField('**Images :camera:**', '** **`avatar`\, `cat`\, `dog`')
+            .addField('**Images :camera:**', '** **`avatar`\, `cat`\, `dog`\, `duck`')
             .setColor('#dc134c')
             .setFooter('Hanko • fait par Azuki et Salmar')
             .setTimestamp();
@@ -72,9 +76,9 @@ let args = messageArray.slice(1);
 
     if (command === `_infobot`) {
         let member = message.mentions.members.first() || message.member,
-    user = member.user;
-    let os = require('os')
-    const duration = moment.duration(bot.uptime).format(" D [days], H [hrs], m [mins], s [secs]");
+        user = member.user;
+        let os = require('os')
+        const duration = moment.duration(bot.uptime).format(" D [days], H [hrs], m [mins], s [secs]");
         let info_embed = new Discord.RichEmbed()
             .setAuthor(bot.user.username + '#' + bot.user.discriminator, bot.user.displayAvatarURL)
             .setColor('#dc134c')
@@ -156,7 +160,6 @@ return message.channel.send({ embed: embed });
         .setFooter("Hanko • fait par Azuki et Salmar")
         .setTimestamp();
 return message.channel.send({ embed: embed });
-
 }
 
  if(message.content.startsWith(prefix + 'cat')) {
@@ -243,6 +246,19 @@ return message.channel.send({ embed: embed });
             .end((err, response) => {
           const lewdembed = new Discord.RichEmbed()
           .setDescription("Aww")
+          .setImage(response.body.url)
+          .setColor(`#dc134c`)
+          .setFooter('Hanko • fait par Azuki et Salmar')
+          .setTimestamp();
+      message.channel.send(lewdembed);
+        })
+    }
+
+    if (command === `${prefix}duck`) {
+        superagent.get('https://random-d.uk/api/v1/random')
+            .end((err, response) => {
+          const lewdembed = new Discord.RichEmbed()
+          .setDescription("Coin")
           .setImage(response.body.url)
           .setColor(`#dc134c`)
           .setFooter('Hanko • fait par Azuki et Salmar')
@@ -518,11 +534,11 @@ return message.channel.send({ embed: embed });
         .setTimestamp();
   message.channel.send(lewdembed);
     })
-     }
+}
 
      if(command === "_gun") {
         let member = message.mentions.members.first()
-        let embed_27 = new Discord.RichEmbed()
+          let embed_27 = new Discord.RichEmbed()
             .setTitle("Gun")
             .setDescription(`**Couchez-vous ! ${message.author.username} attomise ${member}:anguished: **`)
             .setColor("#dc134c")
@@ -540,7 +556,7 @@ return message.channel.send({ embed: embed });
             .setFooter('Hanko • fait par Azuki et Salmar')
             .setTimestamp();
      return message.channel.send(embed_28)};
-
+      
      if (command === `${prefix}hug`) {
      if(message.guild === null)return;
      const user = message.mentions.users.first();
@@ -626,11 +642,25 @@ if (command === `${prefix}waifu`) {
               .setDescription(message.author.toString() + " Voici ta waifu ! Cute :3")
               .setImage(response.body.url)
               .setColor(`#dc134c`)
-              .setURL(response.body.url);
+              .setFooter('Hanko • fait par Azuki et Salmar')
+              .setTimestamp();
           message.channel.send(lewdembed);
     })
     }
-    
+   
+if (command === `${prefix}smug`) {
+    if(message.guild === null)return;
+        superagent.get('https://nekos.life/api/v2/img/waifu')
+         .end((err, response) => {
+                  const lewdembed = new Discord.RichEmbed()
+                  .setDescription(message.author.toString() + " a un air prétentieux :eyes:")
+                  .setImage(response.body.url)
+                  .setColor(`#dc134c`)
+                  .setFooter('Hanko • fait par Azuki et Salmar')
+                  .setTimestamp();
+              message.channel.send(lewdembed);
+        })
+        }    
 
 if (command === `${prefix}slap`) {
 if(message.guild === null)return;
@@ -663,6 +693,14 @@ if (command === `${prefix}kemonomimi`) {
   message.channel.send(lewdembed);
     })
 }
+
+if (command === '_liesdetect') {
+try {
+    message.channel.send('Tu mens à **' + Math.floor(Math.random() * 99) + '%** :sunglasses:');
+  } catch (err) {
+    message.channel.send('Erreur!\n' + err).catch();
+  }
+};
 
 if (command === `${prefix}8ball`) {
 if(message.guild === null)return;
@@ -732,8 +770,7 @@ malScraper.getInfoFromName(search)
       .addField('Lien', data.url);
 
       message.channel.send(malEmbed);
-
-})
+    })
 }
 
 if (command === `${prefix}sondage`) { 
@@ -778,7 +815,7 @@ let msg = await message.channel.send(embed)
           }
 
     if (message.content === '_invite') {
-            message.reply('**Hey ! voici le lien du serveur __[Naruto RP]__** : \n https://discord.gg/pMmpJyh \n **Merci à toi si tu le rejoins ! ^^**');
+            message.reply('**Hey ! voici le lien du serveur officiel de Hanko !** : \n https://discord.gg/rKWhU3R \n **Merci à toi si tu le rejoins ! ^^**');
           }
     if (message.content === '_invitebot') {
             message.reply('**Hey ! voici le lien pour inviter Hanko sur ton serveur !** : \n https://discordapp.com/oauth2/authorize?client_id=603334827516755983&scope=bot&permissions=8232 \n **Merci à toi d\'utiliser Hanko !**');
@@ -789,8 +826,7 @@ let msg = await message.channel.send(embed)
     if (message.content === '_ghost') {
             message.reply('Oh SHIT ! A GHOOoooSt https://youtu.be/qIgoJhqE0j8');
         }
-    });
- 
+});
 bot.on(`message`, async message => {
     if (message.author.bot) return;
     if (message.channel.type === 'dm')return;
